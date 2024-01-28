@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">My Application</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit">Edit_img</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_email_1">Enter email 1</string>
+    <string name="enter_email_2">Enter email 2</string>
+    <string name="enter_email_3">Enter email 3</string>
+    <string name="enter_phone_1">Enter phone 1</string>
+    <string name="enter_phone_2">Enter phone 2</string>
+    <string name="enter_phone_3">Enter phone 3</string>
+    <string name="enter_company">Enter company</string>
+    <string name="enter_job_title">Enter job title</string>
+    <string name="enter_location">Enter location</string>
+    <string name="save_to_phonebook">Save To Phonebook</string>
+    <string name="click_for_img">Capture for image</string>
+    <string name="take_from_folder">Take from folder</string>
 </resources>
