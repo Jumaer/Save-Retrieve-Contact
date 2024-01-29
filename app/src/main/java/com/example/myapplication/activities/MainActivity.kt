@@ -15,70 +15,56 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.NavHostFragment
+import com.example.myapplication.R
 
 
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.utils.OpenImageDialog
-import com.example.myapplication.utils.SaveContactUtil
-import com.example.myapplication.utils.getByteArray
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.imageview.ShapeableImageView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var imageUri: Uri? = null
+    private lateinit var currentPage: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setNav()
 
 
 
-        setListeners()
     }
 
-
-    private fun setListeners() {
-        binding.apply {
-            fabEdit.setOnClickListener {
-                showImgBs()
-            }
-            btnSave.setOnClickListener {
-                saveToPhonebook()
-            }
+    private fun setNav() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            currentPage = destination.label.toString()
         }
-    }
-
-    private fun saveToPhonebook() {
-        binding.apply {
-
-            val mails = mutableListOf(getData(etEmail1), getData(etEmail2), getData(etEmail3))
-            val phones = mutableListOf(getData(etPhone), getData(etPhone2), getData(etPhone3))
-
-            SaveContactUtil.saveToPhoneBook(
-                this@MainActivity,
-                getData(etName),
-                phones,
-                mails,
-                getData(etTitle),
-                getData(etLocation),
-                getData(etCompany),
-                getByteArray(imgPerson)
-            )
-
+        val navGraph = navController.navInflater.inflate(R.navigation.contact_nav_graph)
+        .apply {
+            setStartDestination(R.id.saveContactFragment)
         }
+        navController.setGraph(navGraph,intent.extras)
     }
 
-    private fun getData(layout: TextInputLayout): String {
-        return layout.editText?.text.toString().trim()
-
+    private fun setImageUri(uri: Uri){
+        personImg?.setImageURI(uri)
     }
+
 
     //-------------------------------- IMAGE BOTTOM SHEET------------------------------------//
 
+    private var personImg : ShapeableImageView? = null
 
-    private fun showImgBs() {
+    fun showImgBs(personImage : ShapeableImageView) {
+        personImg = personImage
         OpenImageDialog(this, { onCapture() }, { onFolder() }).show()
     }
 
@@ -132,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     private var cameraLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                binding.imgPerson.setImageURI(imageUri)
+                imageUri?.let { setImageUri(it) }
             }
         }
 
@@ -169,7 +155,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
             if (it.resultCode == RESULT_OK) {
                 imageUri = it.data?.data
-                binding.imgPerson.setImageURI(imageUri)
+                imageUri?.let { it1 -> setImageUri(it1) }
             }
         }
     )

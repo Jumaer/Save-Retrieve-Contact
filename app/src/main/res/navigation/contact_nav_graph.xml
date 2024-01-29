@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contact_nav_graph.xml"
+    app:startDestination="@id/saveContactFragment">
+
+    <fragment
+        android:id="@+id/saveContactFragment"
+        android:name="com.example.myapplication.fragments.SaveContactFragment"
+        android:label="fragment_save_contact"
+        tools:layout="@layout/fragment_save_contact" />
+</navigation>
