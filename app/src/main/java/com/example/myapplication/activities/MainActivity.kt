@@ -15,6 +15,8 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import com.example.myapplication.R
 
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var imageUri: Uri? = null
-    private lateinit var currentPage: String
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +42,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
+
+
     private fun setNav() {
+        val navGraph: NavGraph
+        val navController: NavController
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            currentPage = destination.label.toString()
-        }
-        val navGraph = navController.navInflater.inflate(R.navigation.contact_nav_graph)
-        .apply {
+        navController = navHostFragment.navController
+        navGraph = navController.navInflater.inflate(R.navigation.contact_nav_graph)
+        navGraph.apply {
             setStartDestination(R.id.saveContactFragment)
         }
         navController.setGraph(navGraph,intent.extras)
     }
+
+
 
     private fun setImageUri(uri: Uri){
         personImg?.setImageURI(uri)

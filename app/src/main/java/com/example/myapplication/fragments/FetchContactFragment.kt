@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFetchContactBinding
-import com.example.myapplication.databinding.FragmentSaveContactBinding
+
 
 
 class FetchContactFragment : Fragment() {
@@ -20,6 +22,15 @@ class FetchContactFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFetchContactBinding.inflate(inflater, container, false)
+        setListeners()
         return binding.root
+    }
+
+    private fun setListeners() {
+        binding.apply {
+            fabSwipe.setOnClickListener {
+                findNavController().navigate(R.id.action_fetchContactFragment_to_saveContactFragment)
+            }
+        }
     }
 }

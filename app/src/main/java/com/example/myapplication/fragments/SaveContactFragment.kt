@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.activities.MainActivity
 import com.example.myapplication.databinding.FragmentSaveContactBinding
@@ -55,6 +56,9 @@ class SaveContactFragment : Fragment() {
             }
             btnSave.setOnClickListener {
                 saveToPhonebook()
+            }
+            fabSwipe.setOnClickListener {
+                findNavController().navigate(R.id.action_saveContactFragment_to_fetchContactFragment)
             }
         }
     }

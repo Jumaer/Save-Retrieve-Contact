@@ -9,5 +9,18 @@
         android:id="@+id/saveContactFragment"
         android:name="com.example.myapplication.fragments.SaveContactFragment"
         android:label="fragment_save_contact"
-        tools:layout="@layout/fragment_save_contact" />
+        tools:layout="@layout/fragment_save_contact" >
+        <action
+            android:id="@+id/action_saveContactFragment_to_fetchContactFragment"
+            app:destination="@id/fetchContactFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fetchContactFragment"
+        android:name="com.example.myapplication.fragments.FetchContactFragment"
+        android:label="fragment_fetch_contact"
+        tools:layout="@layout/fragment_fetch_contact" >
+        <action
+            android:id="@+id/action_fetchContactFragment_to_saveContactFragment"
+            app:destination="@id/saveContactFragment" />
+    </fragment>
 </navigation>
