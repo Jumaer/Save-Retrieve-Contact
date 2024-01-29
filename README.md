@@ -6,7 +6,7 @@
 ** Company 
 ** Job Title
 
-# Fetch Contact from Phonebook
+# Retrive Contact from Phonebook
 ** With image
 ** Number
 ** Address
