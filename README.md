@@ -6,7 +6,7 @@
 ** Company 
 ** Job Title
 
-# Retrieve Contact from Phonebook
+# Retrieve Contact from Phonebook ------ Updating
 ** With image
 ** Number
 ** Address
