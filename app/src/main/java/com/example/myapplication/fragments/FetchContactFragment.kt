@@ -10,11 +10,16 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentFetchContactBinding
 
 
-
 class FetchContactFragment : Fragment() {
 
-    private lateinit var binding : FragmentFetchContactBinding
 
+    private lateinit var binding: FragmentFetchContactBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,4 +38,6 @@ class FetchContactFragment : Fragment() {
             }
         }
     }
+
+
 }
