@@ -3,6 +3,11 @@
 ** Multiple mail
 ** Multiple number
 ** Address
-** Office address **
+** Company 
+** Job Title
 
 # Fetch Contact from Phonebook
+** With images
+** Number
+** Address
+** Mail
