@@ -21,11 +21,13 @@ class OpenImageDialog(context: Context, onCapture: () -> Unit,onFolder: () -> Un
                 false
             ).apply {
 
-                imgClickCamera.setOnClickListener {
+                txtCapture.setOnClickListener {
                     onCapture()
+                    dismiss()
                 }
-                imgFileTake.setOnClickListener {
+                txtFolder.setOnClickListener {
                     onFolder()
+                    dismiss()
                 }
 
             }
@@ -38,7 +40,7 @@ class OpenImageDialog(context: Context, onCapture: () -> Unit,onFolder: () -> Un
         if (!bottomSheet.isShowing) bottomSheet.show()
     }
 
-    fun dismiss() {
+    private fun dismiss() {
         if (bottomSheet.isShowing) bottomSheet.dismiss()
     }
 

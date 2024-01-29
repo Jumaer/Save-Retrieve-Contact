@@ -1,5 +1,6 @@
 package com.example.myapplication.utils
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -20,11 +21,12 @@ object SaveContactUtil {
      * @param contactImg   con image for phone
      */
     fun saveToPhoneBook(
+        context: Context?,
         name: String?,
         phones: List<String?>?, mails: List<String?>?,
         title: String?,
         location: String?,
-        company: String?, context: Context?, contactImg: ByteArray?
+        company: String?, contactImg: ByteArray?
     ): Int {
 
         val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI).apply {
