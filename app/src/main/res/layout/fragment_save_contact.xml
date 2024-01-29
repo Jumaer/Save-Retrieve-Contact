@@ -258,7 +258,8 @@
         app:backgroundTint="@color/main_fab"
         app:elevation="@dimen/_4sdp"
         app:fabCustomSize="@dimen/_40sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
