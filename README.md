@@ -7,7 +7,7 @@
 ** Job Title
 
 # Fetch Contact from Phonebook
-** With images
+** With image
 ** Number
 ** Address
 ** Mail
