@@ -22,6 +22,7 @@ import com.example.myapplication.R
 
 
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.utils.Communicator
 import com.example.myapplication.utils.OpenImageDialog
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -77,18 +78,21 @@ class MainActivity : AppCompatActivity() {
 
     //-------------------------------- COMMON PERMISSIONS------------------------------------//
     companion object {
-        private val REQUIRED_PERMISSIONS =
+        private val CAMERA_PERMISSIONS =
             mutableListOf(
-                Manifest.permission.CAMERA
+                Manifest.permission.CAMERA,
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
 
+        private val CONTACT_PERMISSIONS = mutableListOf(Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS).toTypedArray()
+
     }
 
-    private val permissionLauncher =
+    private val cameraPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         )
@@ -96,26 +100,57 @@ class MainActivity : AppCompatActivity() {
             // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
-                if (it.key in REQUIRED_PERMISSIONS && !it.value)
+                if (it.key in CAMERA_PERMISSIONS && !it.value)
                     permissionGranted = false
             }
             if (!permissionGranted) {
-                requestPermissions()
+                requestCameraPermissions()
             } else {
                 // direct navigate to respective screen
                 onCameraLaunch()
             }
         }
 
+    private val contactPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        )
+        { permissions ->
+            // Handle Permission granted/rejected
+            var permissionGranted = true
+            permissions.entries.forEach {
+                if (it.key in CONTACT_PERMISSIONS && !it.value)
+                    permissionGranted = false
+            }
+            if (!permissionGranted) {
+                requestContactPermissions(listener)
+            } else {
+                // direct navigate to respective screen
+                setResultToRet()
+            }
+        }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+    private fun setResultToRet() {
+        listener?.let {
+            it.onFetch()
+        }
+    }
+
+
+    private fun allPermissionsGranted() = CAMERA_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermissions() {
-        permissionLauncher.launch(REQUIRED_PERMISSIONS)
+    private fun requestCameraPermissions() {
+        cameraPermissionLauncher.launch(CAMERA_PERMISSIONS)
+    }
+
+    private var listener : Communicator? = null
+    fun requestContactPermissions(obj : Communicator?){
+        listener = obj
+        contactPermissionLauncher.launch(CONTACT_PERMISSIONS)
     }
 
 
@@ -138,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             if (allPermissionsGranted()) onCameraLaunch()
             else {
-                requestPermissions()
+                requestCameraPermissions()
             }
         }
 
