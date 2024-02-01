@@ -30,7 +30,6 @@ class FetchContactFragment : Fragment() {
     ): View {
         binding = FragmentFetchContactBinding.inflate(inflater, container, false)
         setObserver()
-        setListeners()
         callLauncher()
         return binding.root
     }
@@ -82,13 +81,7 @@ class FetchContactFragment : Fragment() {
       findNavController().navigate(action, bundleOf(DATA_CONTACT to data))
     }
 
-    private fun setListeners() {
-        binding.apply {
-            fabSwipe.setOnClickListener {
-                findNavController().navigate(R.id.action_fetchContactFragment_to_saveContactFragment)
-            }
-        }
-    }
+
 
 
 }
