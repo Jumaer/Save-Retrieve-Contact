@@ -19,11 +19,6 @@ class FetchContactFragment : Fragment() {
 
     private lateinit var binding: FragmentFetchContactBinding
 
-
-
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,7 +39,6 @@ class FetchContactFragment : Fragment() {
     }
 
     private fun getData() {
-        Log.d("NAME + NUMBER", "FETCH")
         context?.apply {
             val list =  RetrieveContact.getNamePhoneDetails(this)
             showContacts(list)
