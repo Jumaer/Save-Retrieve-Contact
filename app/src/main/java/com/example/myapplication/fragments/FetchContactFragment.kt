@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.activities.MainActivity
+import com.example.myapplication.adapter.ContactsAdapter
 import com.example.myapplication.databinding.FragmentFetchContactBinding
 import com.example.myapplication.utils.Communicator
 import com.example.myapplication.utils.RetrieveContact
@@ -26,11 +27,13 @@ class FetchContactFragment : Fragment() {
     ): View {
         binding = FragmentFetchContactBinding.inflate(inflater, container, false)
         setListeners()
-        initLauncher()
+        callLauncher()
         return binding.root
     }
 
-    private fun initLauncher() {
+
+
+    private fun callLauncher() {
         (activity as MainActivity).requestContactPermissions(object : Communicator{
             override fun onFetch() {
                 getData()
@@ -46,10 +49,21 @@ class FetchContactFragment : Fragment() {
     }
 
     private fun showContacts(list: MutableList<RetrieveContact.Contact>) {
+        val dataList = ArrayList<RetrieveContact.Contact>()
         list.forEach {
-            val data = it.name + " "+ it.phones
-            Log.d("NAME + NUMBER" , data)
+            dataList.add(it)
+        }
+        context?.apply {
+            val conAdapter = ContactsAdapter(this, dataList, object : ContactsAdapter.OnClickItem{
+                override fun onShowItem(data: RetrieveContact.Contact) {
 
+                }
+
+            })
+            binding.rvAllContacts.apply {
+                adapter = conAdapter
+                setHasFixedSize(true)
+            }
         }
     }
 
