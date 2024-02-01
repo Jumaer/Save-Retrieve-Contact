@@ -1,6 +1,8 @@
 package com.example.myapplication.utils
 
-import android.annotation.SuppressLint
+import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -15,6 +17,10 @@ import kotlinx.coroutines.launch
 
 object RetrieveContact {
 
+    const val DATA_CONTACT = "DATA_CONTACT"
+
+
+    @Keep
     data class Contact(
         var id : String ,
         var name : String,
@@ -22,7 +28,13 @@ object RetrieveContact {
         var mails : List<String>? = null,
         var address : String? = null,
         var image : Uri? = null
-    )
+    ) : Serializable
+
+    @Keep
+    data class ContactView(
+        val title : String,
+        val value : String,
+    ): Serializable
 
 
 

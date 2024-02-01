@@ -22,5 +22,13 @@
         <action
             android:id="@+id/action_fetchContactFragment_to_saveContactFragment"
             app:destination="@id/saveContactFragment" />
+        <action
+            android:id="@+id/action_fetchContactFragment_to_displayContactFragment"
+            app:destination="@id/displayContactFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/displayContactFragment"
+        android:name="com.example.myapplication.fragments.DisplayContactFragment"
+        android:label="fragment_display_contact"
+        tools:layout="@layout/fragment_display_contact" />
 </navigation>

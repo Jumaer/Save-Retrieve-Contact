@@ -11,6 +11,7 @@
         android:id="@+id/img_person"
         android:layout_width="@dimen/_56sdp"
         android:layout_height="@dimen/_56sdp"
+        android:src="@drawable/ic_contact_person"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
         android:background="@color/gray"
         app:layout_constraintStart_toStartOf="parent"
