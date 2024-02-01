@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.activities.MainActivity
@@ -26,11 +27,19 @@ class FetchContactFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFetchContactBinding.inflate(inflater, container, false)
+        setObserver()
         setListeners()
         callLauncher()
         return binding.root
     }
 
+    private fun setObserver() {
+        RetrieveContact.contactsLiveData.observe(viewLifecycleOwner) {
+            it?.apply {
+                showContacts(this as MutableList<RetrieveContact.Contact>)
+            }
+        }
+    }
 
 
     private fun callLauncher() {
@@ -43,8 +52,7 @@ class FetchContactFragment : Fragment() {
 
     private fun getData() {
         context?.apply {
-            val list =  RetrieveContact.getNamePhoneDetails(this)
-            showContacts(list)
+            RetrieveContact.fetchContacts(lifecycleScope,this)
         }
     }
 

@@ -6,38 +6,25 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 object RetrieveContact {
 
     data class Contact(
-        val id : String ,
-        val name : String,
-        val phones : List<String>? = null,
-        val mails : List<String>? = null,
-        val address : String? = null,
-        val image : Uri? = null
+        var id : String ,
+        var name : String,
+        var phones : List<String>? = null,
+        var mails : List<String>? = null,
+        var address : String? = null,
+        var image : Uri? = null
     )
 
-    @SuppressLint("Range")
-    fun getNamePhoneDetails(mContext: Context): MutableList<Contact> {
-        val contacts = ArrayList<Contact>()
-        val cr = mContext.contentResolver
-        val cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-            null, null, null)
-        if (cur!!.count > 0) {
-            while (cur.moveToNext()) {
-                val id = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NAME_RAW_CONTACT_ID))
-                val name = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                val number = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                val email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))
-                val address = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.DATA))
-                val image = getPhotoUri(mContext,id)
-                contacts.add(Contact(id , name, listOf(number), listOf(email),address,image ))
-            }
-        }
-        return contacts
-    }
+
 
     /**
      * @return the photo URI
@@ -66,5 +53,112 @@ object RetrieveContact {
         val person =
             ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id.toLong())
         return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY)
+    }
+
+
+    private fun getContactEmails(mContext: Context): HashMap<String, ArrayList<String>> {
+        val contactsEmailMap = HashMap<String, ArrayList<String>>()
+        val emailCursor = mContext.contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+            null,
+            null,
+            null,
+            null)
+        if (emailCursor != null && emailCursor.count > 0) {
+            val contactIdIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID)
+            val emailIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)
+            while (emailCursor.moveToNext()) {
+                val contactId = emailCursor.getString(contactIdIndex)
+                val email = emailCursor.getString(emailIndex)
+                //check if the map contains key or not, if not then create a new array list with email
+                if (contactsEmailMap.containsKey(contactId)) {
+                    contactsEmailMap[contactId]?.add(email)
+                } else {
+                    contactsEmailMap[contactId] = arrayListOf(email)
+                }
+            }
+            //contact contains all the emails of a particular contact
+            emailCursor.close()
+        }
+        return contactsEmailMap
+    }
+
+
+    private fun getContactNumbers(mContext: Context): HashMap<String, ArrayList<String>> {
+        val contactsNumberMap = HashMap<String, ArrayList<String>>()
+        val phoneCursor: Cursor? = mContext.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            null,
+            null,
+            null
+        )
+        if (phoneCursor != null && phoneCursor.count > 0) {
+            val contactIdIndex = phoneCursor!!.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
+            val numberIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            while (phoneCursor.moveToNext()) {
+                val contactId = phoneCursor.getString(contactIdIndex)
+                val number: String = phoneCursor.getString(numberIndex)
+                //check if the map contains key or not, if not then create a new array list with number
+                if (contactsNumberMap.containsKey(contactId)) {
+                    contactsNumberMap[contactId]?.add(number)
+                } else {
+                    contactsNumberMap[contactId] = arrayListOf(number)
+                }
+            }
+            //contact contains all the number of a particular contact
+            phoneCursor.close()
+        }
+        return contactsNumberMap
+    }
+
+
+    private fun getPhoneContacts(mContext: Context): ArrayList<Contact> {
+        val contactsList = ArrayList<Contact>()
+        val contactsCursor = mContext.contentResolver?.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            null,
+            null,
+            null,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC")
+        if (contactsCursor != null && contactsCursor.count > 0) {
+            val idIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts._ID)
+            val nameIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+            while (contactsCursor.moveToNext()) {
+                val id = contactsCursor.getString(idIndex)
+                val name = contactsCursor.getString(nameIndex)
+                if (name != null) {
+                    contactsList.add(Contact(id, name))
+                }
+            }
+            contactsCursor.close()
+        }
+        return contactsList
+    }
+
+    private val _contactsLiveData: MutableLiveData<List<Contact>> =
+        MutableLiveData()
+    val contactsLiveData: LiveData<List<Contact>> get() = _contactsLiveData
+    fun fetchContacts(scope : CoroutineScope,mContext: Context) {
+        scope.launch {
+            val contactsListAsync = async { getPhoneContacts(mContext) }
+            val contactNumbersAsync = async { getContactNumbers(mContext) }
+            val contactEmailAsync = async { getContactEmails(mContext) }
+
+
+            val contacts = contactsListAsync.await()
+            val contactNumbers = contactNumbersAsync.await()
+            val contactEmails = contactEmailAsync.await()
+
+            contacts.forEach {
+                contactNumbers[it.id]?.let { numbers ->
+                    it.phones = numbers
+                }
+                contactEmails[it.id]?.let { emails ->
+                    it.mails = emails
+                }
+                it.image = getPhotoUri(mContext,it.id)
+            }
+            _contactsLiveData.postValue(contacts)
+        }
     }
 }
