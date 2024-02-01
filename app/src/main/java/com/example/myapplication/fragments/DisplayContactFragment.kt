@@ -45,6 +45,12 @@ class DisplayContactFragment : Fragment() {
                     counter++
                     dataList.add(RetrieveContact.ContactView("Mail $counter",it))
                 }
+                title?.let {
+                    dataList.add(RetrieveContact.ContactView("Job Title",it))
+                }
+                company?.let {
+                    dataList.add(RetrieveContact.ContactView("Organization",it))
+                }
                 setImage(image)
                 setAdapter(dataList)
             }

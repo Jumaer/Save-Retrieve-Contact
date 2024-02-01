@@ -26,8 +26,9 @@ object RetrieveContact {
         var name : String,
         var phones : List<String>? = null,
         var mails : List<String>? = null,
-        var address : String? = null,
-        var image : Uri? = null
+        var title : String? = null,
+        var image : Uri? = null,
+        var company : String? = null
     ) : Serializable
 
     @Keep
@@ -139,7 +140,7 @@ object RetrieveContact {
                 val id = contactsCursor.getString(idIndex)
                 val name = contactsCursor.getString(nameIndex)
                 if (name != null) {
-                    contactsList.add(Contact(id, name))
+                    contactsList.add(Contact(id, name, title = null, company = null))
                 }
             }
             contactsCursor.close()
